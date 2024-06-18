@@ -71,6 +71,7 @@ namespace WindowsGSM.DiscordBot
                         }
                         else if (splits[0] != "list" && (serverIds.Contains("0") || serverIds.Contains(splits[1])))
                         {
+                            await message.Channel.SendMessageAsync($"Command {splits[0]} recieve for server {splits[1]}. Process in progress");
                             switch (splits[0])
                             {
                                 case "start": await Action_Start(message, args[1]); break;
