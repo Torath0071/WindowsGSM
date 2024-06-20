@@ -285,10 +285,9 @@ namespace WindowsGSM
                 BalloonTipText = "WindowsGSM is running in the background",
                 Text = "WindowsGSM",
                 BalloonTipIcon = ToolTipIcon.Info,
-                Visible = true
+                Visible = true,
+                Icon = new System.Drawing.Icon(System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Images/WindowsGSM-Icon.ico")).Stream)
             };
-
-            notifyIcon.Icon = new System.Drawing.Icon(System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Images/WindowsGSM-Icon.ico")).Stream);
             notifyIcon.BalloonTipClicked += OnBalloonTipClick;
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
@@ -370,7 +369,7 @@ namespace WindowsGSM
             try
             {
                 ManagementObjectSearcher mos = new ManagementObjectSearcher($"Select * From Win32_Process Where ParentProcessID={processId}");
-                foreach (ManagementObject mo in mos.Get())
+                foreach (ManagementObject mo in mos.Get().Cast<ManagementObject>())
                 {
                     Process p = Process.GetProcessById(Convert.ToInt32(mo["ProcessID"]));
                     if (Equals(p, "conhost"))
@@ -578,9 +577,11 @@ namespace WindowsGSM
 
             string pluginsDir = ServerPath.FolderName.Plugins;
 
-            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
-            ofd.Filter = "zip files (*.zip)|*.zip";
-            ofd.InitialDirectory = pluginsDir;
+            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog
+            {
+                Filter = "zip files (*.zip)|*.zip",
+                InitialDirectory = pluginsDir
+            };
 
             DialogResult dr = ofd.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
@@ -1015,7 +1016,7 @@ namespace WindowsGSM
                     button_Stop.IsEnabled = true;
                     button_Restart.IsEnabled = true;
                     Process p = GetServerMetadata(row.ID).Process;
-                    button_Console.IsEnabled = (p == null || p.HasExited) ? false : !(p.StartInfo.CreateNoWindow || p.StartInfo.RedirectStandardOutput);
+                    button_Console.IsEnabled = p != null && !p.HasExited && !(p.StartInfo.CreateNoWindow || p.StartInfo.RedirectStandardOutput);
                     button_Update.IsEnabled = false;
                     button_Backup.IsEnabled = false;
 
@@ -1277,10 +1278,7 @@ namespace WindowsGSM
 
         private void Button_SendToken_Click(object sender, RoutedEventArgs e)
         {
-            if (Installer != null)
-            {
-                Installer.StandardInput.WriteLine(textBox_InstallToken.Text);
-            }
+            Installer?.StandardInput.WriteLine(textBox_InstallToken.Text);
 
             textBox_InstallToken.Text = string.Empty;
         }
@@ -1852,7 +1850,7 @@ namespace WindowsGSM
                         _serverMetadata[int.Parse(server.ID)].MainWindow = p.MainWindowHandle;
                     }
 
-                    p.WaitForInputIdle();
+                    p.WaitForInputIdle(gameServer.WaitForInputIdleTime == int.MaxValue ? int.MaxValue : gameServer.WaitForInputIdleTime * 1000);
 
                     if (!p.StartInfo.CreateNoWindow)
                     {
@@ -2190,7 +2188,7 @@ namespace WindowsGSM
             }
 
             string startPath = ServerPath.GetServers(server.ID);
-            string zipFile = Path.Combine(ServerPath.GetBackups(server.ID), $"{zipFileName}{DateTime.Now.ToString("yyyyMMddHHmmss")}.zip");
+            string zipFile = Path.Combine(ServerPath.GetBackups(server.ID), $"{zipFileName}{DateTime.Now:yyyyMMddHHmmss}.zip");
 
             string error = string.Empty;
             await Task.Run(() =>
@@ -2739,12 +2737,12 @@ namespace WindowsGSM
 
         public void Log(string serverId, string logText)
         {
-            string title = int.TryParse(serverId, out int i) ? $"#{i.ToString()}" : serverId;
-            string log = $"[{DateTime.Now.ToString("MM/dd/yyyy-HH:mm:ss")}][{title}] {logText}" + Environment.NewLine;
+            string title = int.TryParse(serverId, out int i) ? $"#{i}" : serverId;
+            string log = $"[{DateTime.Now:MM/dd/yyyy-HH:mm:ss}][{title}] {logText}" + Environment.NewLine;
             string logPath = ServerPath.GetLogs();
             Directory.CreateDirectory(logPath);
 
-            string logFile = Path.Combine(logPath, $"L{DateTime.Now.ToString("yyyyMMdd")}.log");
+            string logFile = Path.Combine(logPath, $"L{DateTime.Now:yyyyMMdd}.log");
             File.AppendAllText(logFile, log);
 
             textBox_wgsmlog.AppendText(log);
@@ -2754,11 +2752,11 @@ namespace WindowsGSM
 
         public void DiscordBotLog(string logText)
         {
-            string log = $"[{DateTime.Now.ToString("MM/dd/yyyy-HH:mm:ss")}] {logText}" + Environment.NewLine;
+            string log = $"[{DateTime.Now:MM/dd/yyyy-HH:mm:ss}] {logText}" + Environment.NewLine;
             string logPath = ServerPath.GetLogs();
             Directory.CreateDirectory(logPath);
 
-            string logFile = Path.Combine(logPath, $"L{DateTime.Now.ToString("yyyyMMdd")}-DiscordBot.log");
+            string logFile = Path.Combine(logPath, $"L{DateTime.Now:yyyyMMdd}-DiscordBot.log");
             File.AppendAllText(logFile, log);
 
             textBox_DiscordBotLog.AppendText(log);
@@ -3138,7 +3136,7 @@ namespace WindowsGSM
                     //Download WindowsGSM-Updater.exe
                     controller = await this.ShowProgressAsync("Downloading WindowsGSM-Updater...", "Please wait...");
                     controller.SetIndeterminate();
-                    bool success = await DownloadWindowsGSMUpdater();
+                    await DownloadWindowsGSMUpdater();
                     await controller.CloseAsync();
                 }
 

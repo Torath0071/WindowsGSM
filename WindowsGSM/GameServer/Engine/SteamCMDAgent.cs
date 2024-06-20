@@ -13,14 +13,15 @@ namespace WindowsGSM.GameServer.Engine
         public string Error { get; set; }
         public string Notice { get; set; }
 
-        public virtual bool loginAnonymous { get; set; }
+        public virtual bool LoginAnonymous { get; set; }
         public virtual string AppId { get; set; }
         public virtual string StartPath { get; set; }
+        public virtual int WaitForInputIdleTime { get; set; } = int.MaxValue;
 
         public async Task<Process> Install()
         {
             var steamCMD = new Installer.SteamCMD();
-            Process p = await steamCMD.Install(serverData.ServerID, string.Empty, AppId, true, loginAnonymous);
+            Process p = await steamCMD.Install(serverData.ServerID, string.Empty, AppId, true, LoginAnonymous);
             Error = steamCMD.Error;
 
             return p;
@@ -28,7 +29,7 @@ namespace WindowsGSM.GameServer.Engine
 
         public async Task<Process> Update(bool validate = false, string custom = null)
         {
-            var (p, error) = await Installer.SteamCMD.UpdateEx(serverData.ServerID, AppId, validate, custom: custom, loginAnonymous: loginAnonymous);
+            var (p, error) = await Installer.SteamCMD.UpdateEx(serverData.ServerID, AppId, validate, custom: custom, loginAnonymous: LoginAnonymous);
             Error = error;
             return p;
         }

@@ -69,7 +69,7 @@ namespace WindowsGSM
                 string logPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "logs");
                 Directory.CreateDirectory(logPath);
 
-                string logFile = Path.Combine(logPath, $"CRASH_{DateTime.Now.ToString("yyyyMMdd")}.log");
+                string logFile = Path.Combine(logPath, $"CRASH_{DateTime.Now:yyyyMMdd}.log");
                 File.AppendAllText(logFile, $"WindowsGSM v{version}\n\n" + args.ExceptionObject);
 #if !DEBUG
                 string latestLogFile = Path.Combine(logPath, "latest_crash_wgsm_temp.log");

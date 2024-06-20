@@ -143,7 +143,7 @@ namespace WindowsGSM.DiscordBot
                         }
                         else
                         {
-                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus.ToString()} state, not able to start.");
+                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus} state, not able to start.");
                         }
 
                         await SendServerEmbed(message, Color.Green, args[1], WindowsGSM.GetServerStatus(args[1]).ToString(), WindowsGSM.GetServerName(args[1]));
@@ -182,7 +182,7 @@ namespace WindowsGSM.DiscordBot
                         }
                         else
                         {
-                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus.ToString()} state, not able to stop.");
+                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus} state, not able to stop.");
                         }
 
                         await SendServerEmbed(message, Color.Orange, args[1], WindowsGSM.GetServerStatus(args[1]).ToString(), WindowsGSM.GetServerName(args[1]));
@@ -217,7 +217,7 @@ namespace WindowsGSM.DiscordBot
                         }
                         else
                         {
-                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus.ToString()} state, not able to restart.");
+                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus} state, not able to restart.");
                         }
 
                         await SendServerEmbed(message, Color.Blue, args[1], WindowsGSM.GetServerStatus(args[1]).ToString(), WindowsGSM.GetServerName(args[1]));
@@ -253,7 +253,7 @@ namespace WindowsGSM.DiscordBot
                         }
                         else
                         {
-                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus.ToString()} state, not able to send command.");
+                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus} state, not able to send command.");
                         }
                     }
                     else
@@ -291,7 +291,7 @@ namespace WindowsGSM.DiscordBot
                         }
                         else
                         {
-                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus.ToString()} state, not able to backup.");
+                            await message.Channel.SendMessageAsync($"Server (ID: {args[1]}) currently in {serverStatus} state, not able to backup.");
                         }
                     }
                     else
