@@ -312,7 +312,7 @@ namespace WindowsGSM.Installer
 
             if (p.ExitCode != 0)
             {
-                Error = $"Exit code: {p.ExitCode.ToString()}";
+                Error = $"Exit code: {p.ExitCode}";
                 return false;
             }
 
@@ -440,7 +440,8 @@ namespace WindowsGSM.Installer
             SendEnterPreventFreeze(p);
 
             string output = await p.StandardOutput.ReadToEndAsync();
-            Regex regex = new Regex("\"public\"\r\n.{0,}{\r\n.{0,}\"buildid\".{1,}\"(.*?)\"");
+            output = output.Replace("\r\n", "\n").Replace("\r", "\n");
+            Regex regex = new Regex("\"public\"\n.{0,}{\n.{0,}\"buildid\".{1,}\"(.*?)\"");
             var matches = regex.Matches(output);
 
             if (matches.Count < 1 || matches[1].Groups.Count < 2)
