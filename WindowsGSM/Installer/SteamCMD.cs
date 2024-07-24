@@ -352,6 +352,25 @@ namespace WindowsGSM.Installer
             }
         }
 
+        private async Task<string> ReadSteamOutput(Process p)
+        {
+            if (p == null)
+                return "";
+
+            string result = "";
+            var buffer = new char[Console.BufferWidth];
+            var outputRead = 0;
+
+            do
+            {
+                outputRead = await p.StandardOutput.ReadAsync(buffer, 0, buffer.Length);
+                result += new string(buffer, 0, outputRead);
+            }
+            while (outputRead > 0);
+
+            return result;
+        }
+
         public string GetLocalBuild(string serverId, string appId)
         {
             string manifestFile = $"appmanifest_{appId}.acf";
@@ -429,7 +448,7 @@ namespace WindowsGSM.Installer
                 {
                     FileName = exePath,
                     //Sometimes it fails to get if appID < 90
-                    Arguments = $"+login anonymous +app_info_update 1 +app_info_print {appId} +app_info_print {appId} +app_info_print {appId} +app_info_print {appId} +quit",
+                    Arguments = $"+login anonymous +app_info_update 1 +app_info_print {appId} +app_info_print {appId} +logoff +quit",
                     WindowStyle = ProcessWindowStyle.Minimized,
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -441,7 +460,7 @@ namespace WindowsGSM.Installer
 
             string output = await p.StandardOutput.ReadToEndAsync();
             output = output.Replace("\r\n", "\n").Replace("\r", "\n");
-            Regex regex = new Regex("\"public\"\n.{0,}{\n.{0,}\"buildid\".{1,}\"(.*?)\"");
+            Regex regex = new Regex(@"""public""\n.{0,}{\n.{0,}""buildid"".{1,}""(.*?)""");
             var matches = regex.Matches(output);
 
             if (matches.Count < 1 || matches[1].Groups.Count < 2)

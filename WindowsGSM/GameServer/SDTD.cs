@@ -143,11 +143,53 @@ namespace WindowsGSM.GameServer
 
         public async Task Stop(Process p)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
+                // Save game before closing process
                 Functions.ServerConsole.SetMainWindow(p.MainWindowHandle);
-                p.CloseMainWindow();
-                Functions.ServerConsole.SendWaitToMainWindow("{ENTER}");
+                Functions.ServerConsole.SendWaitToMainWindow("saveworld{ENTER}");
+                await Task.Delay(1000);
+
+                int RestartTime = 5; // Time in minutes
+                for (int i = RestartTime; i > 0; i--)
+                {
+                    Functions.ServerConsole.SetMainWindow(p.MainWindowHandle);
+                    if (i > 1)
+                    {
+                        Functions.ServerConsole.SendWaitToMainWindow($"say Server will stop in {i} minute(s)" + "{ENTER}");
+                        await Task.Delay(60000);
+                    }
+                    else
+                    {
+                        Functions.ServerConsole.SendWaitToMainWindow($"say Server will stop in 30 seconds" + "{ENTER}");
+                        await Task.Delay(30000);
+                    }
+                }
+
+                // Send closing request to servercheat serverchat Server will stop in 5 minutes
+                Functions.ServerConsole.SetMainWindow(p.MainWindowHandle);
+                Functions.ServerConsole.SendWaitToMainWindow("saveworld{ENTER}");
+                await Task.Delay(3000);
+                Functions.ServerConsole.SetMainWindow(p.MainWindowHandle);
+                Functions.ServerConsole.SendWaitToMainWindow("shutdown{ENTER}");
+
+                // Wait for server closing normally
+                long timeout = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds() + 30;
+                while (true)
+                {
+                    // Kill process due to 60 sec timeout
+                    if (timeout < new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds())
+                    {
+                        p.Kill();
+                        break;
+                    }
+
+                    // Process terminated
+                    if (p.HasExited)
+                        break;
+
+                    await Task.Delay(1000);
+                }
             });
         }
 
