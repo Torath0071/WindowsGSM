@@ -117,18 +117,14 @@ namespace WindowsGSM.Functions
 
         public static BitmapSource GetDefaultUserBitmapSource()
         {
-            using (var stream = System.Windows.Application.GetResourceStream(new Uri(DefaultUserImage)).Stream)
-            {
-                return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-            }
+            using var stream = System.Windows.Application.GetResourceStream(new Uri(DefaultUserImage)).Stream;
+            return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
         }
 
         public static BitmapSource GetDefaultPluginBitmapSource()
         {
-            using (var stream = System.Windows.Application.GetResourceStream(new Uri(DefaultPluginImage)).Stream)
-            {
-                return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-            }
+            using var stream = System.Windows.Application.GetResourceStream(new Uri(DefaultPluginImage)).Stream;
+            return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
         }
 
         public static dynamic GetPluginClass(PluginMetadata plugin, ServerConfig serverConfig = null) => Activator.CreateInstance(plugin.Type, serverConfig);

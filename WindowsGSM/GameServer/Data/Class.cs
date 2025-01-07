@@ -5,56 +5,65 @@ namespace WindowsGSM.GameServer.Data
 {
     static class Class
     {
+        private static readonly Dictionary<string, dynamic> _serverCache = new Dictionary<string, dynamic>();
+
         public static dynamic Get(string serverGame, ServerConfig serverData = null, List<PluginMetadata> pluginList = null)
         {
+            dynamic instance = null;
+
+            if(serverData != null && _serverCache.TryGetValue(serverData.ServerID, out instance))
+            {
+                return instance;
+            }
+
             switch (serverGame)
             {
-                case CSGO.FullName: return new CSGO(serverData);
-                case GMOD.FullName: return new GMOD(serverData);
-                case TF2.FullName: return new TF2(serverData);
-                case MCPE.FullName: return new MCPE(serverData);
-                case RUST.FullName: return new RUST(serverData);
-                case CS.FullName: return new CS(serverData);
-                case CSCZ.FullName: return new CSCZ(serverData);
-                case HL2DM.FullName: return new HL2DM(serverData);
-                case L4D2.FullName: return new L4D2(serverData);
-                case MC.FullName: return new MC(serverData);
-                case GTA5.FullName: return new GTA5(serverData);
-                case SDTD.FullName: return new SDTD(serverData);
-                case MORDHAU.FullName: return new MORDHAU(serverData);
-                case SE.FullName: return new SE(serverData);
-                case DAYZ.FullName: return new DAYZ(serverData);
-                case MCBE.FullName: return new MCBE(serverData);
-                case OLOW.FullName: return new OLOW(serverData);
-                case CSS.FullName: return new CSS(serverData);
-                case INS.FullName: return new INS(serverData);
-                case NMRIH.FullName: return new NMRIH(serverData);
-                case ARKSE.FullName: return new ARKSE(serverData);
-                case ZPS.FullName: return new ZPS(serverData);
-                case DODS.FullName: return new DODS(serverData);
-                case SW.FullName: return new SW(serverData);
-                case ROK.FullName: return new ROK(serverData);
-                case HEAT.FullName: return new HEAT(serverData);
-                case BW.FullName: return new BW(serverData);
-                case ONSET.FullName: return new ONSET(serverData);
-                case EGS.FullName: return new EGS(serverData);
-                case UNT.FullName: return new UNT(serverData); 
-                case AVORION.FullName: return new AVORION(serverData);
-                case CE.FullName: return new CE(serverData);
-                case INSS.FullName: return new INSS(serverData);
-                case DOD.FullName: return new DOD(serverData);
-                case DMC.FullName: return new DMC(serverData);
-                case HLOF.FullName: return new HLOF(serverData);
-                case RCC.FullName: return new RCC(serverData);
-                case TFC.FullName: return new TFC(serverData);
-                case TF.FullName: return new TF(serverData);
-                case SQ.FullName: return new SQ(serverData);
-                case BT.FullName: return new BT(serverData);
-                case PS.FullName: return new PS(serverData);
-                case ROR2.FullName: return new ROR2(serverData);
-                case ECO.FullName: return new ECO(serverData);
-                case VTS.FullName: return new VTS(serverData);
-                case SDK2013.FullName: return new SDK2013(serverData);
+                case CSGO.FullName: instance = new CSGO(serverData); break;
+                case GMOD.FullName: instance = new GMOD(serverData); break;
+                case TF2.FullName: instance = new TF2(serverData); break;
+                case MCPE.FullName: instance = new MCPE(serverData); break;
+                case RUST.FullName: instance = new RUST(serverData); break;
+                case CS.FullName: instance = new CS(serverData); break;
+                case CSCZ.FullName: instance = new CSCZ(serverData); break;
+                case HL2DM.FullName: instance = new HL2DM(serverData); break;
+                case L4D2.FullName: instance = new L4D2(serverData); break;
+                case MC.FullName: instance = new MC(serverData); break;
+                case GTA5.FullName: instance = new GTA5(serverData); break;
+                case SDTD.FullName: instance = new SDTD(serverData); break;
+                case MORDHAU.FullName: instance = new MORDHAU(serverData); break;
+                case SE.FullName: instance = new SE(serverData); break;
+                case DAYZ.FullName: instance = new DAYZ(serverData); break;
+                case MCBE.FullName: instance = new MCBE(serverData); break;
+                case OLOW.FullName: instance = new OLOW(serverData); break;
+                case CSS.FullName: instance = new CSS(serverData); break;
+                case INS.FullName: instance = new INS(serverData); break;
+                case NMRIH.FullName: instance = new NMRIH(serverData); break;
+                case ARKSE.FullName: instance = new ARKSE(serverData); break;
+                case ZPS.FullName: instance = new ZPS(serverData); break;
+                case DODS.FullName: instance = new DODS(serverData); break;
+                case SW.FullName: instance = new SW(serverData); break;
+                case ROK.FullName: instance = new ROK(serverData); break;
+                case HEAT.FullName: instance = new HEAT(serverData); break;
+                case BW.FullName: instance = new BW(serverData); break;
+                case ONSET.FullName: instance = new ONSET(serverData); break;
+                case EGS.FullName: instance = new EGS(serverData); break;
+                case UNT.FullName: instance = new UNT(serverData); break; 
+                case AVORION.FullName: instance = new AVORION(serverData); break;
+                case CE.FullName: instance = new CE(serverData); break;
+                case INSS.FullName: instance = new INSS(serverData); break;
+                case DOD.FullName: instance = new DOD(serverData); break;
+                case DMC.FullName: instance = new DMC(serverData); break;
+                case HLOF.FullName: instance = new HLOF(serverData); break;
+                case RCC.FullName: instance = new RCC(serverData); break;
+                case TFC.FullName: instance = new TFC(serverData); break;
+                case TF.FullName: instance = new TF(serverData); break;
+                case SQ.FullName: instance = new SQ(serverData); break;
+                case BT.FullName: instance = new BT(serverData); break;
+                case PS.FullName: instance = new PS(serverData); break;
+                case ROR2.FullName: instance = new ROR2(serverData); break;
+                case ECO.FullName: instance = new ECO(serverData); break;
+                case VTS.FullName: instance = new VTS(serverData); break;
+                case SDK2013.FullName: instance = new SDK2013(serverData); break;
                 default: // Load Plugin
                 {
                     if (pluginList == null) { return null; }
@@ -63,13 +72,20 @@ namespace WindowsGSM.GameServer.Data
                     {
                         if (plugin.IsLoaded && plugin.FullName == serverGame)
                         {
-                            return PluginManagement.GetPluginClass(plugin, serverData);
+                            instance = PluginManagement.GetPluginClass(plugin, serverData);
+                            break;
                         }
                     }
-
-                    return null;
+                    break;
                 };
+            };
+
+            if (instance != null)
+            {
+                _serverCache.Add(serverData.ServerID, instance);
             }
+
+            return instance;
         }
     }
 }

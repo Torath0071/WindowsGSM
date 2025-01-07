@@ -710,10 +710,7 @@ namespace WindowsGSM
                             }
                         });
                     }
-                    if (icon == null)
-                    {
-                        icon = PluginManagement.DefaultPluginImage.Replace("pack://application:,,,", "/WindowsGSM;component");
-                    }
+                    icon ??= PluginManagement.DefaultPluginImage.Replace("pack://application:,,,", "/WindowsGSM;component");
 
                     string serverId = i.ToString();
                     string pidString = string.Empty;
@@ -2938,18 +2935,14 @@ namespace WindowsGSM
 
         private void RestartOnCrash_IsCheckedChanged(object sender, EventArgs e)
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\WindowsGSM", true))
-            {
-                key?.SetValue(RegistryKeyName.RestartOnCrash, MahAppSwitch_RestartOnCrash.IsOn.ToString());
-            }
+            using var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\WindowsGSM", true);
+            key?.SetValue(RegistryKeyName.RestartOnCrash, MahAppSwitch_RestartOnCrash.IsOn.ToString());
         }
 
         private void SendStatistics_IsCheckedChanged(object sender, EventArgs e)
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\WindowsGSM", true))
-            {
-                key?.SetValue(RegistryKeyName.SendStatistics, MahAppSwitch_SendStatistics.IsOn.ToString());
-            }
+            using var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\WindowsGSM", true);
+            key?.SetValue(RegistryKeyName.SendStatistics, MahAppSwitch_SendStatistics.IsOn.ToString());
         }
 
         private void SetStartOnBoot(bool enable)
@@ -3038,30 +3031,28 @@ namespace WindowsGSM
         {
             try
             {
-                using (WebClient webClient = new WebClient())
+                using WebClient webClient = new WebClient();
+                string json = await webClient.DownloadStringTaskAsync($"https://windowsgsm.com/patreon/patreonAuth.php?auth={authKey}");
+                bool success = JObject.Parse(json)["success"].ToString() == "True";
+
+                if(success)
                 {
-                    string json = await webClient.DownloadStringTaskAsync($"https://windowsgsm.com/patreon/patreonAuth.php?auth={authKey}");
-                    bool success = JObject.Parse(json)["success"].ToString() == "True";
+                    string name = JObject.Parse(json)["name"].ToString();
+                    string type = JObject.Parse(json)["type"].ToString();
 
-                    if (success)
-                    {
-                        string name = JObject.Parse(json)["name"].ToString();
-                        string type = JObject.Parse(json)["type"].ToString();
+                    g_DonorType = type;
+                    g_DiscordBot.SetDonorType(g_DonorType);
+                    comboBox_Themes.IsEnabled = true;
 
-                        g_DonorType = type;
-                        g_DiscordBot.SetDonorType(g_DonorType);
-                        comboBox_Themes.IsEnabled = true;
-
-                        ThemeManager.Current.ChangeTheme(this, $"{(MahAppSwitch_DarkTheme.IsOn ? "Dark" : "Light")}.{comboBox_Themes.SelectedItem}");
-
-                        return (true, name);
-                    }
-
-                    MahAppSwitch_DonorConnect.IsOn = false;
-
-                    //Set theme
                     ThemeManager.Current.ChangeTheme(this, $"{(MahAppSwitch_DarkTheme.IsOn ? "Dark" : "Light")}.{comboBox_Themes.SelectedItem}");
+
+                    return (true, name);
                 }
+
+                MahAppSwitch_DonorConnect.IsOn = false;
+
+                //Set theme
+                ThemeManager.Current.ChangeTheme(this, $"{(MahAppSwitch_DarkTheme.IsOn ? "Dark" : "Light")}.{comboBox_Themes.SelectedItem}");
             }
             catch
             {
@@ -3186,8 +3177,8 @@ namespace WindowsGSM
                 webRequest.UserAgent = "Anything";
                 webRequest.ServicePoint.Expect100Continue = false;
                 var response = await webRequest.GetResponseAsync();
-                using (var responseReader = new StreamReader(response.GetResponseStream()))
-                    return JObject.Parse(responseReader.ReadToEnd())["tag_name"].ToString();
+                using var responseReader = new StreamReader(response.GetResponseStream());
+                return JObject.Parse(responseReader.ReadToEnd())["tag_name"].ToString();
             }
             catch
             {
@@ -3201,10 +3192,8 @@ namespace WindowsGSM
 
             try
             {
-                using (WebClient webClient = new WebClient())
-                {
-                    await webClient.DownloadFileTaskAsync("https://github.com/WindowsGSM/WindowsGSM-Updater/releases/latest/download/WindowsGSM-Updater.exe", filePath);
-                }
+                using WebClient webClient = new WebClient();
+                await webClient.DownloadFileTaskAsync("https://github.com/WindowsGSM/WindowsGSM-Updater/releases/latest/download/WindowsGSM-Updater.exe", filePath);
             }
             catch (Exception e)
             {
@@ -3393,10 +3382,8 @@ namespace WindowsGSM
         {
             try
             {
-                using (var webClient = new WebClient())
-                {
-                    return webClient.DownloadString("https://ipinfo.io/ip").Replace("\n", string.Empty);
-                }
+                using var webClient = new WebClient();
+                return webClient.DownloadString("https://ipinfo.io/ip").Replace("\n", string.Empty);
             }
             catch
             {
@@ -3924,10 +3911,8 @@ namespace WindowsGSM
 
         private void Switch_DiscordBotAutoStart_Click(object sender, RoutedEventArgs e)
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\WindowsGSM", true))
-            {
-                key?.SetValue("DiscordBotAutoStart", MahAppSwitch_DiscordBotAutoStart.IsOn.ToString());
-            }
+            using var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\WindowsGSM", true);
+            key?.SetValue("DiscordBotAutoStart", MahAppSwitch_DiscordBotAutoStart.IsOn.ToString());
         }
 
         private void Button_DiscordBotInvite_Click(object sender, RoutedEventArgs e)
