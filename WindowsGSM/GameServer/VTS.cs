@@ -246,12 +246,10 @@ namespace WindowsGSM.GameServer
             // Get latest build in https://aur.archlinux.org/cgit/aur.git/log/?h=vintagestory with regex
             try
             {
-                using (WebClient webClient = new WebClient())
-                {
-                    string html = await webClient.DownloadStringTaskAsync("https://aur.archlinux.org/cgit/aur.git/log/?h=vintagestory");
-                    Regex regex = new Regex(@"(\d{1,}\.\d{1,}\.\d{1,})<\/a>"); // Match "1.12.14</a>"
-                    return regex.Match(html).Groups[1].Value; // Get first group -> "1.12.14"
-                }
+                using WebClient webClient = new WebClient();
+                string html = await webClient.DownloadStringTaskAsync("https://aur.archlinux.org/cgit/aur.git/log/?h=vintagestory");
+                Regex regex = new Regex(@"(\d{1,}\.\d{1,}\.\d{1,})<\/a>"); // Match "1.12.14</a>"
+                return regex.Match(html).Groups[1].Value; // Get first group -> "1.12.14"
             }
             catch
             {

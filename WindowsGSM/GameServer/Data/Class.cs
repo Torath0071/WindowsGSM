@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using WindowsGSM.Functions;
 
 namespace WindowsGSM.GameServer.Data
@@ -11,7 +12,7 @@ namespace WindowsGSM.GameServer.Data
         {
             dynamic instance = null;
 
-            if(serverData != null && _serverCache.TryGetValue(serverData.ServerID, out instance))
+            if(!string.IsNullOrWhiteSpace(serverData?.ServerID) && _serverCache.TryGetValue(serverData.ServerID, out instance))
             {
                 return instance;
             }
@@ -80,7 +81,7 @@ namespace WindowsGSM.GameServer.Data
                 };
             };
 
-            if (instance != null)
+            if (instance != null && !string.IsNullOrWhiteSpace(serverData?.ServerID))
             {
                 _serverCache.Add(serverData.ServerID, instance);
             }

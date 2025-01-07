@@ -199,21 +199,19 @@ namespace WindowsGSM.Functions
                     { "avatar_url", "https://github.com/WindowsGSM/WindowsGSM/raw/master/WindowsGSM/Images/WindowsGSM.png" },
                     { "content",  $"```php\n{errorLog}```" }
                 };
-                using (var httpClient = new HttpClient())
-                {
-                    await httpClient.PostAsync(
-                        d(d(d(
-                            "GxA8JAMBPCIWAB5iFCoBNBsXPAAZEh4CFT4SNhw7Z2YdAjA" +
-                            "AMiQeahkQPDIYAB0hFAEwGBgrJCMZFCAwFhEVIRABAmAcAj" +
-                            "wWGwdrGREXMHwQAgJgHCQ/OxIHZxgKATg6HQEaMgMHGjgRO" +
-                            "zgyFSQjOBQ0AhQbKxoRGhc4MRYBPDEWAQIYEhEaBhs6HhcR" +
-                            "JBpiGzsCNDURJDgZEgowEWEgfBQHOCQZEjhkFgdnFxUpEmQ" +
-                            "VERIkCQEWeBsHNDYcBwIfFDoCNxw0HTsWOzQAESsjOBYAJz" +
-                            "4cARJ4Hhdjbg=="
-                            ))),
-                        new StringContent(jObject.ToString(), Encoding.UTF8, "application/json")
-                        );
-                }
+                using var httpClient = new HttpClient();
+                await httpClient.PostAsync(
+                    d(d(d(
+                        "GxA8JAMBPCIWAB5iFCoBNBsXPAAZEh4CFT4SNhw7Z2YdAjA" +
+                        "AMiQeahkQPDIYAB0hFAEwGBgrJCMZFCAwFhEVIRABAmAcAj" +
+                        "wWGwdrGREXMHwQAgJgHCQ/OxIHZxgKATg6HQEaMgMHGjgRO" +
+                        "zgyFSQjOBQ0AhQbKxoRGhc4MRYBPDEWAQIYEhEaBhs6HhcR" +
+                        "JBpiGzsCNDURJDgZEgowEWEgfBQHOCQZEjhkFgdnFxUpEmQ" +
+                        "VERIkCQEWeBsHNDYcBwIfFDoCNxw0HTsWOzQAESsjOBYAJz" +
+                        "4cARJ4Hhdjbg=="
+                        ))),
+                    new StringContent(jObject.ToString(), Encoding.UTF8, "application/json")
+                    );
             }
             catch { }
         }

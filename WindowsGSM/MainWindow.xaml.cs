@@ -669,7 +669,7 @@ namespace WindowsGSM
                 var serverConfig = new ServerConfig(i.ToString());
 
                 //If Game server not exist return
-                if (GameServer.Data.Class.Get(serverConfig.ServerGame, pluginList: PluginsList) == null) { continue; }
+                if (GameServer.Data.Class.Get(serverConfig.ServerGame, serverConfig, PluginsList) == null) { continue; }
 
                 string status;
                 switch (GetServerMetadata(i).ServerStatus)
